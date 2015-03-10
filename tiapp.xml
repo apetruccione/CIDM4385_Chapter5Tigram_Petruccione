@@ -13,6 +13,7 @@
     <analytics>true</analytics>
     <guid>b95326c3-b38c-46aa-b5f5-017ba60ee581</guid>
     <property name="ti.ui.defaultunit" type="string">dp</property>
+    <property name="acs-api-key-development" type="string">u7Ifj1LZpBbB41THXhd7R97qDxLDo6xc</property>    
     <ios>
         <plist>
             <dict>

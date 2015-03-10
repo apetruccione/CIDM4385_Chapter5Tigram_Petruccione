@@ -15,8 +15,6 @@ function InitAdapter(config) {
 function Sync(method, model, options) {
 	var object_name = model.config.adapter.collection_name;
 
-	//determine which sync method to call based on the
-	//collection type in the model
 	if (object_name === "photos") {
 		processACSPhotos(model, method, options);
 	} else if (object_name === "users") {
@@ -31,17 +29,17 @@ function Sync(method, model, options) {
 function processACSPhotos(model, method, options) {
 	switch (method) {
 		case "create":
-			// include attributes into the params for ACS
+			
 			Cloud.Photos.create(model.toJSON(), function(e) {
 				if (e.success) {
 
-					// save the meta data with object
+					
 					model.meta = e.meta;
 	
-					// return the individual photo object found
+					
 					options.success(e.photos[0]);
 	
-					// trigger fetch for UI updates
+					
 					model.trigger("fetch");
 				} else {
 					Ti.API.error("Photos.create " + e.message);
@@ -72,7 +70,7 @@ function processACSPhotos(model, method, options) {
 	      	break;
 		case "update":
 		case "delete":
-			// Not currently implemented, let the user know
+			
 			alert("Not Implemented Yet");
 			break;
 	}
