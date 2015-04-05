@@ -6,8 +6,50 @@ OS_IOS && $.cameraButton.addEventListener("click", function(_event) {
 });
 
 //event handlers
+$.feedTable.addEventListener("click", processTableClicks);
 
-/*
+//handlers
+
+
+function processTableClicks(_event) {
+	if (_event.source.id === "commentButton") {
+		handleCommentButtonClicked(_event);
+	} else if (_event.source.id === "locationButton") {
+		handleLocationButtonClicked(_event);
+	} else if (_event.source.id === "shareButton") {
+		handleShareButtonClicked(_event);
+	}
+}
+
+
+/**
+ * work on handling comments through the comment model
+ */
+function handleCommentButtonClicked(_event) {
+	var collection,
+	    model = null;
+
+	// handle call from mapDetail or feedRow
+	if (!_event.row) {
+		model = _event.data;
+	} else {
+		collection = Alloy.Collections.instance("Photo");
+		model = collection.get(_event.row.row_id);
+	}
+
+	var controller = Alloy.createController("comment", {
+		photo : model,
+		parentController : $
+	});
+
+	// initialize the data in the view, load content
+	controller.initialize();
+
+	// open the view
+	Alloy.Globals.openCurrentTabWindow(controller.getView());
+}
+
+/**
  * In this code, we retrieve a picture and the event.media object holding the picture
  * taken by the user.  We need to place the image into a table view according to the wireframes
  * we worked up.  We do this by adding items to a row, then inserting the row into the table view
@@ -15,17 +57,22 @@ OS_IOS && $.cameraButton.addEventListener("click", function(_event) {
  * see: http://docs.appcelerator.com/titanium/latest/#!/guide/TableViews
  */
 $.cameraButtonClicked = function(_event) {
-	alert("user clicked the camera button");
+	//alert("user clicked the camera button");
+	
+	var photoSource;
+	
+	Ti.API.debug('Ti.Media.isCameraSupported ' + Ti.Media.isCameraSupported);	
+	
+	if(Titanium.Media.getIsCameraSupported()){
+		photoSource = Titanium.Media.showCamera;
+	} else {
+		photoSource = Titanium.Media.openPhotoGallery;
+	}
 
-	var photoSource = Titanium.Media.getIsCameraSupported() ? Titanium.Media.showCamera : Titanium.Media.openPhotoGallery;
 
-	//photosource is now a variable representing one of the methods above:
-	//Titanium.Media.showCamera OR Titanium.Media.openPhotoGallery
-	//the constructed object is the expected argument to that method
-	//thus, the code below is a call to that method
 	photoSource({
-		success : function(event) {
-			//seonc argument is the callback
+		success : function(_event) {
+			//second argument is the callback
 			processImage(event.media, function(processResponse) {
 
 				if(processResponse.success){
@@ -77,6 +124,8 @@ title: "Sample Photo " + new Date()
 _callback(photoObject);
 
 }*/
+
+//utility methods
 
 /**
  *
